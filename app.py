@@ -16,8 +16,8 @@ except Exception:
 
 
 st.set_page_config(
-    page_title="MentorBridge",
-    page_icon="✨",
+    page_title="MentorBridge | Magic Bus",
+    page_icon="🚌",
     layout="wide",
 )
 
@@ -54,6 +54,7 @@ st.markdown(
     .card { background:#fff; border:1px solid #ececec; border-radius:12px; padding:12px 14px; margin:10px 0; box-shadow:0 6px 16px rgba(0,0,0,0.05); }
     .card h4 { margin:0 0 6px 0; }
     .muted { color:#6b7280; }
+    .brand-chip { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; background:#eef4ff; color:#1f4fd1; font-weight:600; font-size:0.85rem; }
 
     div[data-testid="stButton"] > button[kind="primary"] { background:#2f80ed; border-color:#2f80ed; }
     div[data-testid="stButton"] > button[kind="primary"]:hover { background:#1f6fd1; border-color:#1f6fd1; }
@@ -337,9 +338,9 @@ with st.sidebar:
     st.session_state["selected_skills"] = sanitize_choices(st.session_state.get("selected_skills", []), SKILL_OPTIONS)
     st.session_state["selected_interests"] = sanitize_choices(st.session_state.get("selected_interests", []), INTEREST_OPTIONS)
 
-    st.markdown("**MentorBridge**")
-    st.header("Mentor Workspace")
-    st.info("Select a learner and guide them with the mentor copilot.")
+    st.markdown("<span class='brand-chip'>🚌 Magic Bus</span>", unsafe_allow_html=True)
+    st.header("Mentor Forms")
+    st.info("Select a learner and update their profile to power mentor‑ready guidance.")
 
     students = load_students()
     student_names = sorted({row.get("name", "").strip() for row in students if row.get("name")})
@@ -387,7 +388,7 @@ with st.sidebar:
     st.slider("Problem Solving (1-5)", 1, 5, key="problem_solving_confidence")
     st.slider("English Comfort (1-5)", 1, 5, key="english_comfort")
 
-    if st.button("Save Learner Updates"):
+    if st.button("Save Learner Updates", type="primary"):
         save_profile(
             st.session_state.get("student_name", ""),
             st.session_state.get("education_level", "10th Pass"),
@@ -401,9 +402,10 @@ with st.sidebar:
             st.session_state.get("problem_solving_confidence"),
             st.session_state.get("english_comfort"),
         )
+        st.success("Profile saved. Ready to generate mentor guidance.")
 
-st.title("MentorBridge")
-st.caption("MentorBridge: AI mentor copilot for AI/Data onboarding and guidance")
+st.title("MentorBridge • Magic Bus")
+st.caption("Mentor‑first workspace for AI/Data onboarding and guidance.")
 
 left, right = st.columns(2)
 with left:
