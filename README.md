@@ -1,162 +1,264 @@
-    # MentorBridge (graph-rag-mentor-copilot)
+---
+title: "MentorBridge"
+archetype: "onboarding_guide"
+status: "Internal (Hackathon / Learning Prototype)"
+owner: "Team MentorBridge"
+maintainer: "Team MentorBridge"
+version: "0.2"
+last_reviewed: "2026-01-28"
+tags: ["azure", "rag", "knowledge-graph", "mentoring", "onboarding"]
+---
 
-    This is a **hands‑on exploration** project inspired by a hackathon I came across.
-    It is **not** an official submission and **not** a product—just a practical prototype to learn Azure OpenAI, RAG, and lightweight Knowledge Graphs in a mentor‑support scenario.
 
-    The demo context represents a generic youth mentorship organization.
+# MentorBridge (Graph‑RAG Mentor Copilot)
 
-    ## Why this project
-    - Experiment with **Azure OpenAI** in a real‑world workflow
-    - Combine **RAG** (retrieval of similar student profiles) with **Knowledge Graph rules** (relational reasoning)
-    - Build a mentor‑oriented UI that is more than a simple chatbot
+This is a **hands‑on exploration project**, inspired by a hackathon use‑case.
+It is **not** an official submission and **not** a production product.
 
-    ## Features
-    - Dual-purpose web app: Mentor Copilot + Onboarding Velocity Engine
-    - Mentor dashboard with student selector + session persistence (SQLite)
-    - Mentor Copilot chat (mentor‑facing guidance + student‑ready responses)
-    - RAG over `students.csv` + JSON Knowledge Graph (GraphRAG‑style)
-    - Skill Bridge Radar (Plotly) + interactive Knowledge Graph explorer
+The goal is learning:
 
-- Automated document verification using Azure AI Document Intelligence
-- Human-in-the-loop escalation via webhook on low confidence
+* how Azure AI services fit together
+* how RAG + lightweight Knowledge Graphs improve guidance
+* how AI can reduce *operational friction* without removing humans
 
-  ## Tech Stack
-  - Backend: Spring Boot + Spring AI + Azure OpenAI + PGVector
-  - Frontend: Streamlit
-  - Storage: SQLite (mentor sessions), PostgreSQL (vector store)
+The demo context represents a **generic youth mentorship and skilling organization**.
 
-  ## Quickstart
+---
 
-  ### 1) Backend
+## Why This Project Exists
 
-  ```bash
-  mvn spring-boot:run
-  ```
+This project explores two real problems:
 
-  ### 2) Frontend
+1. **Mentor decision fatigue**
+2. **Slow, manual onboarding workflows**
 
-  ```bash
-  streamlit run app.py
-  ```
+Instead of solving them with a single chatbot, we split responsibilities clearly.
 
-  ### 3) UI dependencies
+---
 
-  ```bash
-  /opt/homebrew/bin/python3.11 -m pip install plotly streamlit-agraph
-  ```
+## What This App Does (At a Glance)
 
-  ## Required Environment Variables
+* Dual‑purpose web app:
 
-  ```bash
-  export AZURE_OPENAI_ENDPOINT="https://<your-resource>.openai.azure.com/"
-  export AZURE_OPENAI_API_KEY="<your-key>"
-  export AZURE_OPENAI_CHAT_DEPLOYMENT="gpt-4o"
-  export AZURE_OPENAI_EMBEDDING_DEPLOYMENT="text-embedding-ada-002"
-  ```
+  * **Mentor Copilot** (guidance + reasoning)
+  * **Onboarding Velocity Engine** (document verification)
 
-  ## Project Structure
-  - `app.py` — Streamlit mentor dashboard + copilot chat
-  - `src/main/java/...` — Spring Boot backend services
-  - `src/main/resources/students.csv` — synthetic student profiles
-  - `src/main/resources/knowledge_graph.json` — interest→trait→skill→role rules
-  - `mentor_sessions.db` — mentor chat history (SQLite)
+* Mentor dashboard with:
 
-  ## Process Flow
+  * student selector
+  * session persistence (SQLite)
 
-  ```mermaid
-  flowchart TD
-      A[Student Profile + Surveys] --> B[RAG: Similar Student Retrieval]
-      A --> C[Knowledge Graph Rules]
-      B --> D[Mentor Copilot Prompt]
-      C --> D
-      D --> E[Roadmap + Questions + Resources]
-      E --> F[Mentor Review]
-      F --> G[Student Guidance + Progress Tracking]
-      G --> A
-  ```
+* AI‑assisted reasoning using:
 
-  ## Architecture Diagram
+  * RAG over `students.csv`
+  * JSON Knowledge Graph rules
 
-  ```mermaid
-  flowchart LR
-      subgraph UI[Streamlit Mentor Dashboard]
-          U1[Student Selector]
-          U2[Mentor Copilot Chat]
-          U3[Skill Bridge Radar]
-          U4[Knowledge Graph Explorer]
-      end
+* Automated document verification using:
 
-      subgraph API[Spring Boot API]
-          C1[CareerAdvisorController]
-          S1[CareerAdvisorService]
-          T1[Curriculum Tool]
-          DL[DataLoadingService]
-      end
+  * Azure AI Document Intelligence
+  * human‑in‑the‑loop escalation on low confidence
 
-      subgraph Data[Data & Storage]
-          CSV[students.csv]
-          KG[knowledge_graph.json]
-          VS[PGVector]
-          DB[mentor_sessions.db]
-      end
+---
 
-      subgraph AI[Azure OpenAI]
-          M1[Chat Model]
-          E1[Embedding Model]
-      end
+## Tech Stack (Why Each Piece Exists)
 
-      U1 --> C1
-      U2 --> C1
-      U3 --> C1
-      U4 --> C1
+### Backend
 
-      C1 --> S1
-      S1 --> T1
-      S1 --> M1
-      S1 --> E1
-      DL --> VS
+* **Spring Boot** – orchestration + business logic
+* **Spring AI** – structured LLM access
+* **Azure OpenAI** – reasoning + explanation
+* **PGVector** – similarity search (RAG)
 
-      CSV --> DL
-      KG --> S1
-      DB --> U2
-      VS --> S1
-  ```
+### Frontend
 
-  ## Notes
-  - This is a learning prototype inspired by a hackathon theme.
-  - It is not a production system.
+* **Streamlit** – fast, explainable UI for demos
 
-  ## Onboarding Velocity Engine
+### Storage
 
-  This module captures Aadhaar, PAN, and income statements, extracts fields using **Azure AI Document Intelligence**, verifies against the student profile table, and escalates low-confidence cases via Power Automate.
+* **SQLite** – mentor chat sessions
+* **PostgreSQL** – student profiles + vectors
 
-  ### Required Environment Variables
+---
 
-  ```bash
-  export AZURE_DOCINTEL_ENDPOINT="https://<your-resource>.cognitiveservices.azure.com"
-  export AZURE_DOCINTEL_KEY="<your-key>"
-  export POWER_AUTOMATE_WEBHOOK_URL="<your-flow-http-trigger-url>"
-  ```
+## Quickstart (Run Locally)
+
+### 1) Backend
+
+```bash
+mvn spring-boot:run
+```
+
+If this fails, nothing else will work.
+
+---
+
+### 2) Frontend
+
+```bash
+streamlit run app.py
+```
+
+Open the URL shown in the terminal.
+
+---
+
+### 3) UI Dependencies
+
+```bash
+pip install plotly streamlit-agraph
+```
+
+---
+
+## Required Environment Variables
+
+```bash
+export AZURE_OPENAI_ENDPOINT="https://<your-resource>.openai.azure.com/"
+export AZURE_OPENAI_API_KEY="<your-key>"
+export AZURE_OPENAI_CHAT_DEPLOYMENT="gpt-4o"
+export AZURE_OPENAI_EMBEDDING_DEPLOYMENT="text-embedding-ada-002"
+```
+
+Only Azure OpenAI is required to demo the Mentor Copilot.
+
+---
+
+## Project Structure (Mental Map)
+
+* `app.py`
+
+  * Streamlit mentor dashboard + onboarding UI
+
+* `src/main/java/...`
+
+  * Spring Boot APIs
+
+* `src/main/resources/students.csv`
+
+  * synthetic student profiles
+
+* `src/main/resources/knowledge_graph.json`
+
+  * interest → trait → skill → role rules
+
+* `mentor_sessions.db`
+
+  * mentor chat history (SQLite)
+
+---
+
+## Mentor Copilot – Process Flow
+
+```mermaid
+flowchart TD
+    A[Student Profile + Surveys] --> B[RAG: Similar Student Retrieval]
+    A --> C[Knowledge Graph Rules]
+    B --> D[Mentor Copilot Prompt]
+    C --> D
+    D --> E[Roadmap + Questions + Resources]
+    E --> F[Mentor Review]
+    F --> G[Student Guidance + Progress Tracking]
+    G --> A
+```
+
+**Key idea:**
+AI assists mentors, mentors remain accountable.
+
+---
+
+## Mentor Copilot – Architecture
+
+```mermaid
+flowchart LR
+    subgraph UI[Streamlit Mentor Dashboard]
+        U1[Student Selector]
+        U2[Mentor Copilot Chat]
+        U3[Skill Bridge Radar]
+        U4[Knowledge Graph Explorer]
+    end
+
+    subgraph API[Spring Boot API]
+        C1[CareerAdvisorController]
+        S1[CareerAdvisorService]
+        T1[Curriculum Tool]
+        DL[DataLoadingService]
+    end
+
+    subgraph Data[Data & Storage]
+        CSV[students.csv]
+        KG[knowledge_graph.json]
+        VS[PGVector]
+        DB[mentor_sessions.db]
+    end
+
+    subgraph AI[Azure OpenAI]
+        M1[Chat Model]
+        E1[Embedding Model]
+    end
+
+    U1 --> C1
+    U2 --> C1
+    U3 --> C1
+    U4 --> C1
+
+    C1 --> S1
+    S1 --> T1
+    S1 --> M1
+    S1 --> E1
+    DL --> VS
+
+    CSV --> DL
+    KG --> S1
+    DB --> U2
+    VS --> S1
+```
+
+---
+
+## Onboarding Velocity Engine
+
+This module accelerates learner onboarding while keeping humans in control.
+
+### What It Does
+
+* Captures Aadhaar, PAN, and income documents
+* Extracts fields using **Azure AI Document Intelligence**
+* Applies confidence‑based verification rules
+* Escalates uncertain cases for human review
+
+---
+
+### Required Environment Variables
+
+```bash
+export AZURE_DOCINTEL_ENDPOINT="https://<your-resource>.cognitiveservices.azure.com"
+export AZURE_DOCINTEL_KEY="<your-key>"
+export POWER_AUTOMATE_WEBHOOK_URL="<your-flow-http-trigger-url>"
+```
+
+---
 
 ### Document Verification Logic (Current)
 
 1. Azure Document Intelligence extracts:
-   - `FullName`, `DateOfBirth`, `DocumentNumber`, and income (if present)
+
+   * FullName
+   * DateOfBirth
+   * DocumentNumber
+   * Income (if present)
+
 2. Java validation checks:
-   - Normalized name on Aadhaar, PAN, and income docs **must match** `student_profiles.full_name`
-   - Confidence on each doc must be **>= 0.90**
+
+   * Normalized document name must match `student_profiles.full_name`
+   * Confidence score must be **≥ 0.90**
+
 3. If any confidence < 0.90:
-   - A webhook payload is sent to `POWER_AUTOMATE_WEBHOOK_URL` for human review
 
-### Do I need to set it up?
+   * A webhook is sent for human review
 
-Yes, for real extraction:
+---
 
-- Provide **AZURE_DOCINTEL_ENDPOINT** and **AZURE_DOCINTEL_KEY**
-- Ensure the `student_profiles` table contains `student_id` + `full_name`
-  (auto-created by `StudentProfileSchemaInitializer` on app start)
-
-## Dual-Purpose Architecture (Mentor Copilot + Onboarding)
+## Dual‑Purpose Architecture (Mentor + Onboarding)
 
 ```mermaid
 flowchart LR
@@ -193,3 +295,19 @@ flowchart LR
     U1 --> S3
     U2 --> S3
 ```
+
+---
+
+## Important Notes
+
+* This is a **learning prototype**
+* No model fine‑tuning is performed
+* All logic is explainable and inspectable
+
+If you can explain:
+
+* what problem is solved
+* why AI is used
+* where humans stay in control
+
+Then the system is doing its job.
